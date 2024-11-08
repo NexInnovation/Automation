@@ -151,7 +151,7 @@ p<!DOCTYPE html>
             /* background-color: #f0f0f0; */
             /* border: 1px solid #ccc; */
             margin: 10px;
-            display: none;
+            display: block;
             /* Initially hide the div */
         }
 
@@ -283,8 +283,10 @@ p<!DOCTYPE html>
             <!-- Button container -->
             <div class="btn-container">
                 <!-- Removed the "Home" link -->
-                <button class="btn" onclick="showMainOffice()">Main Office</button>
-                <button class="btn" onclick="showWorkshop()">Workshop</button>
+                <!-- <button class="btn" onclick="showMainOffice()">Main Office</button> -->
+                <button class="btn" >Main Office</button>
+                <!-- <button class="btn" onclick="showWorkshop()">Workshop</button> -->
+                <button class="btn" >Workshop</button>
                 <!-- Add more links as needed -->
             </div>
         </div>
@@ -463,20 +465,20 @@ p<!DOCTYPE html>
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById("mainOffice").style.display = "block";
-            document.getElementById("workshop").style.display = "none";
-        });
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     document.getElementById("mainOffice").style.display = "block";
+        //     document.getElementById("workshop").style.display = "none";
+        // });
 
-        function showMainOffice() {
-            document.getElementById("mainOffice").style.display = "block";
-            document.getElementById("workshop").style.display = "none";
-        }
+        // function showMainOffice() {
+        //     document.getElementById("mainOffice").style.display = "block";
+        //     document.getElementById("workshop").style.display = "none";
+        // }
 
-        function showWorkshop() {
-            document.getElementById("mainOffice").style.display = "none";
-            document.getElementById("workshop").style.display = "block";
-        }
+        // function showWorkshop() {
+        //     document.getElementById("mainOffice").style.display = "none";
+        //     document.getElementById("workshop").style.display = "block";
+        // }
 
 
 
