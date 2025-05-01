@@ -1,106 +1,48 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-        apiKey: "AIzaSyD81ldbbftUZFBUycPcI7J9Ev9aIi0Zw-g",
-        authDomain: "office-automation-ed735.firebaseapp.com",
-        databaseURL: "https://office-automation-ed735-default-rtdb.firebaseio.com",
-        projectId: "office-automation-ed735",
-        storageBucket: "office-automation-ed735.appspot.com",
-        messagingSenderId: "1022647187546",
-        appId: "1:1022647187546:web:13be0a1c558153ead88063",
-        measurementId: "G-YVZN9S30CZ"
-    };
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBr5JzHhz0Lt-Wk-L-pH_kPz8lBuJfRUyA",
+    authDomain: "office-automation-9fc59.firebaseapp.com",
+    databaseURL: "https://office-automation-9fc59-default-rtdb.firebaseio.com",
+    projectId: "office-automation-9fc59",
+    storageBucket: "office-automation-9fc59.appspot.com",
+    messagingSenderId: "969334655990",
+    appId: "1:969334655990:web:e94c37a726f558823d15d7"
+};
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const auth = firebase.auth();
 
-    // Reference to the Firebase database
-    const database = firebase.database();
-    const ref = database.ref('data');
+// Auto-login using device credentials
+const email = "esp32.nexinnovation@gmail.com";
+const password = "ESP32.NexInnovation.Automation";
 
-    // // Retrieve data from Firebase when page is initialized
-    // ref.once('value', function (snapshot) {
-    //     var buttonStatesString = snapshot.val();
-    //     // console.log('Data retrieved from Firebase:', buttonStatesString);
-    //     if (buttonStatesString.length === 6) {
-    //         setButtonStates(buttonStatesString);
-    //     } else {
-    //         console.log('Invalid button states string:', buttonStatesString);
-    //         buttonStatesString = '000000'; // Reset button states to default
-    //         // console.log('Button states reset', buttonStatesString);
-    //         sendDataToFirebase(buttonStatesString);
-    //         // console.log('Button states reset');
-    //         setButtonStates(buttonStatesString);
-    //     }
-    // }, function (error) {
-    //     console.error('Error retrieving data from Firebase:', error);
-    // });
-
-    // Set up listener for changes in button states
-    ref.on('value', function (snapshot) {
-        var buttonStatesString = snapshot.val();
-        console.log('Button states changed in Firebase:', buttonStatesString);
-        if (buttonStatesString && buttonStatesString.length === 10) {
-            setButtonStates(buttonStatesString);
-        } else {
-            console.log('Invalid button states string:', buttonStatesString);
-
-            buttonStatesString = '000000'; // Reset button states to default
-            // console.log('Button states reset', buttonStatesString);
-            sendDataToFirebase(buttonStatesString);
-            // console.log('Button states reset');
-
-            // const buttons = document.querySelectorAll('.switch-toggle input[type="checkbox"]');
-
-            // buttons.forEach((button, index) => {
-            //     button.addEventListener('change', function () {
-            //         const buttonStatesString = Array.from(buttons).map(button => button.checked ? '1' : '0').join('');
-            //         sendDataToFirebase(buttonStatesString);
-            //     });
-
-            // });
-
-            setButtonStates(buttonStatesString);
-        }
-    }, function (error) {
-        console.error('Error listening for changes in Firebase:', error);
+auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+        // console.log("✅ Firebase authenticated");
+        initializeSwitches();
+    })
+    .catch((error) => {
+        alert("Firebase login failed: " + error.message);
     });
 
-    function setButtonStates(buttonStatesString) {
-        // console.log(buttonStatesString);
-        // console.log(buttonStatesString.length);
-        // buttonStatesString.substring(1, 8);
-        // console.log( buttonStatesString.substring(2, 8));
-        const buttons = document.querySelectorAll('.switch-toggle input[type="checkbox"]');
-        for (let i = 0; i < buttons.length; i++) {
-            const buttonState = buttonStatesString.substring(2, 8).charAt(i);
-            // console.log(buttonState);
-            // console.log(i-2);
-            buttons[i].checked = (buttonState === '1');
-        }
-    }
+function initializeSwitches() {
+    const relays = ["r1", "r2", "r3", "r4", "r5", "r6"];
+    const buttonIds = ["button1", "button2", "button3", "button4", "button5", "button6"];
 
-    const buttons = document.querySelectorAll('.switch-toggle input[type="checkbox"]');
+    relays.forEach((relay, index) => {
+        const checkbox = document.getElementById(buttonIds[index]);
+        const relayRef = database.ref(`main_office/${relay}`);
 
-    buttons.forEach((button, index) => {
-        button.addEventListener('change', function () {
-            const buttonStatesString = Array.from(buttons).map(button => button.checked ? '1' : '0').join('');
-            sendDataToFirebase(buttonStatesString);
+        // Reflect real-time changes from Firebase
+        relayRef.on("value", (snapshot) => {
+            checkbox.checked = snapshot.val() === true;
+        });
+
+        // Update Firebase when toggle is clicked
+        checkbox.addEventListener("change", () => {
+            relayRef.set(checkbox.checked);
         });
     });
-
-    function sendDataToFirebase(data) {
-
-        const database = firebase.database();
-        const verifierString = '"*' + data + '*"';
-        const ref = database.ref('data');
-
-        ref.set(verifierString, function (error) {
-            if (error) {
-                console.error('Error updating Firebase database:', error);
-            } else {
-                console.log('Data successfully sent to Firebase:', data);
-            }
-        });
-    }
-});
+}

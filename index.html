@@ -1,300 +1,32 @@
-p<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automation</title>
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .wrapper {
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        /* Navbar styles */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1;
-        }
-
-        /* Logo styles */
-        .navbar .logo {
-            color: white;
-
-            margin-left: 20px;
-            /* Adjust the margin as needed */
-        }
-
-        /* Button container */
-        .navbar .btn-container {
-            /* display: flex; */
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Button styles */
-        .navbar .btn {
-            padding: 17px 40px;
-            margin-left: 30px;
-            margin-right: 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            border: 0;
-            background-color: white;
-            box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-size: 15px;
-            transition: all 0.5s ease;
-            color: black;
-        }
-
-        .navbar .btn:hover {
-            letter-spacing: 3px;
-            background-color: hsl(261deg 80% 48%);
-            color: hsl(0, 0%, 100%);
-            box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
-        }
-
-        .navbar .btn:active {
-            letter-spacing: 3px;
-            background-color: hsl(261deg 80% 48%);
-            color: hsl(0, 0%, 100%);
-            box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
-            transform: translateY(10px);
-            transition: 100ms;
-        }
-
-         .container {
-            border: 2px solid black;
-
-
-        }
-
-        /* For screens smaller than 600px (e.g., mobile phones) */
-        @media screen and (max-width: 800px) {
-            .navbar .logo {
-                font-size: 20px;
-            }
-
-            .navbar .btn {
-                padding: 12px 24px;
-                /* Reduce button padding for smaller screens */
-                font-size: 8px;
-                /* Reduce font size for smaller screens */
-                height: 30px;
-                display: block;
-                align-items: center;
-                margin-top: 20px;
-            }
-
-            .container {
-                margin-top: 120px;
-                /* Adjust this value based on your navbar height */
-            }
-
-
-        }
-
-        /* For screens between 600px and 1024px (e.g., tablets and small laptops) */
-        @media screen and (min-width: 801px) and (max-width: 2000px) {
-
-            .navbar .logo {
-                font-size: 40px;
-            }
-
-            .navbar .btn {
-                /* display: flex; */
-                padding: 15px 30px;
-                /* Adjust button padding for medium-sized screens */
-                font-size: 14px;
-                /* Adjust font size for medium-sized screens */
-                height: 70px;
-                width: 200px;
-                margin-top: 20px;
-            }
-
-            .container {
-                margin-top: 130px;
-                /* Adjust this value based on your navbar height */
-            }
-        }
-
-        /* Container styles */
-        .container {
-            display: flex;
-            flex: 1;
-        }
-
-        .container .main-div {
-            flex: 1;
-            padding: 20px;
-            /* background-color: #f0f0f0; */
-            /* border: 1px solid #ccc; */
-            margin: 10px;
-            display: block;
-            /* Initially hide the div */
-        }
-
-        .switch-holder {
-            display: flex;
-            padding: 10px 20px;
-            border-radius: 10px;
-            box-shadow: -8px -8px 15px rgba(255, 255, 255, .7),
-                10px 10px 10px rgba(0, 0, 0, .2),
-                inset 8px 8px 15px rgba(255, 255, 255, .7),
-                inset 10px 10px 10px rgba(0, 0, 0, .2);
-            justify-content: space-between;
-            align-items: center;
-            width: 50%;
-            /* Set width to 80% of the viewport */
-            margin: 0 auto;
-            /* Center horizontally */
-            margin-top: 10px;
-        }
-
-        .switch-holder:not(:last-child) {
-            margin-bottom: 20px;
-            /* Add margin between buttons */
-        }
-
-
-        @media only screen and (min-width: 768px) {
-
-            /* Adjust for larger screens like laptops */
-            .switch-holder {
-                width: 50%;
-                /* Set width to 50% of the viewport */
-            }
-        }
-
-        @media only screen and (max-width: 480px) {
-
-            /* Adjust for smaller screens like mobile */
-            .switch-holder {
-                flex-direction: column;
-                /* Stack buttons vertically */
-                align-items: flex-start;
-                /* Align buttons to the start */
-            }
-        }
-
-        .switch-label {
-            padding: 0 20px 0 10px;
-        }
-
-        .switch-label i {
-            margin-right: 5px;
-        }
-
-        .switch-toggle {
-            height: 40px;
-        }
-
-        .switch-toggle input[type="checkbox"] {
-            position: absolute;
-            opacity: 0;
-            z-index: -2;
-        }
-
-        .switch-toggle input[type="checkbox"]+label {
-            position: relative;
-            display: inline-block;
-            width: 100px;
-            height: 40px;
-            border-radius: 20px;
-            margin: 0;
-            cursor: pointer;
-            box-shadow: inset -8px -8px 15px rgba(255, 255, 255, .6),
-                inset 10px 10px 10px rgba(0, 0, 0, .25);
-        }
-
-        .switch-toggle input[type="checkbox"]+label::before {
-            position: absolute;
-            content: 'OFF';
-            font-size: 13px;
-            text-align: center;
-            line-height: 25px;
-            top: 8px;
-            left: 8px;
-            width: 45px;
-            height: 25px;
-            border-radius: 20px;
-            background-color: #eeeeee;
-            box-shadow: -3px -3px 5px rgba(255, 255, 255, .5),
-                3px 3px 5px rgba(0, 0, 0, .25);
-            transition: .3s ease-in-out;
-        }
-
-        .switch-toggle input[type="checkbox"]:checked+label::before {
-            left: 50%;
-            content: 'ON';
-            color: #fff;
-            background-color: #00b33c;
-            box-shadow: -3px -3px 5px rgba(255, 255, 255, .5),
-                3px 3px 5px #00b33c;
-        }
-
-        .footer {
-            /* flex-shrink: 0; */
-            /* background-color: #333; */
-            /* color: #fff; */
-            /* text-align: center; */
-            /* line-height: 60px; */
-            background-color: #333;
-            text-align: center;
-            color: #fff;
-            padding: 20px;
-            margin-top: 10px;
-            position: none;
-            bottom: 0;
-            width: 100%;
-            z-index: 1;
-        }
-    </style>
+    <title>NexInnovation Relay Control</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="script.js" defer></script>
 </head>
 
 <body>
-
     <div class="wrapper">
         <div class="navbar">
-            <!-- Logo -->
             <div class="logo">NexInnovation</div>
-
-            <!-- Button container -->
             <div class="btn-container">
-                <!-- Removed the "Home" link -->
-                <!-- <button class="btn" onclick="showMainOffice()">Main Office</button> -->
-                <button class="btn" >Main Office</button>
-                <!-- <button class="btn" onclick="showWorkshop()">Workshop</button> -->
-                <button class="btn" >Workshop</button>
-                <!-- Add more links as needed -->
+                <button class="btn">Main Office</button>
+                <button class="btn">Workshop</button>
             </div>
         </div>
 
+
+
         <div class="container">
-
             <div id="mainOffice" class="main-div">
-
                 <div class="switch-holder">
                     <div class="switch-label">
                         <i class="fa fa-bluetooth-b"></i><span>Main Light 1</span>
@@ -355,136 +87,15 @@ p<!DOCTYPE html>
                     </div>
                 </div>
             </div>
-
-            <!-- <div id="workshop" class="main-div">
-                <p>workshop</p>
-
-            </div> -->
         </div>
 
         <footer class="footer">
-            <p>&copy; 2023 Nexinnovation. All rights reserved.</p>
+            <p>&copy; 2023 NexInnovation. All rights reserved.</p>
             <p>Powered by Parth</p>
         </footer>
     </div>
-    <!-- <script src="script.js"></script> -->
-    <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
-            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            const firebaseConfig = {
-                apiKey: "AIzaSyD81ldbbftUZFBUycPcI7J9Ev9aIi0Zw-g",
-                authDomain: "office-automation-ed735.firebaseapp.com",
-                databaseURL: "https://office-automation-ed735-default-rtdb.firebaseio.com",
-                projectId: "office-automation-ed735",
-                storageBucket: "office-automation-ed735.appspot.com",
-                messagingSenderId: "1022647187546",
-                appId: "1:1022647187546:web:13be0a1c558153ead88063",
-                measurementId: "G-YVZN9S30CZ"
-            };
-
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-
-            // Reference to the Firebase database
-            const database = firebase.database();
-            const ref = database.ref('data');
-
-            // // Retrieve data from Firebase when page is initialized
-            // ref.once('value', function (snapshot) {
-            //     var buttonStatesString = snapshot.val();
-            //     // console.log('Data retrieved from Firebase:', buttonStatesString);
-            //     if (buttonStatesString.length === 6) {
-            //         setButtonStates(buttonStatesString);
-            //     } else {
-            //         console.log('Invalid button states string:', buttonStatesString);
-            //         buttonStatesString = '000000'; // Reset button states to default
-            //         // console.log('Button states reset', buttonStatesString);
-            //         sendDataToFirebase(buttonStatesString);
-            //         // console.log('Button states reset');
-            //         setButtonStates(buttonStatesString);
-            //     }
-            // }, function (error) {
-            //     console.error('Error retrieving data from Firebase:', error);
-            // });
-
-            // Set up listener for changes in button states
-            ref.on('value', function (snapshot) {
-                var buttonStatesString = snapshot.val();
-                console.log('Button states changed in Firebase:', buttonStatesString);
-                if (buttonStatesString && buttonStatesString.length === 10) {
-                    setButtonStates(buttonStatesString);
-                } else {
-                    console.log('Invalid button states string:', buttonStatesString);
-                    buttonStatesString = '000000'; // Reset button states to default
-                    // console.log('Button states reset', buttonStatesString);
-                    sendDataToFirebase(buttonStatesString);
-                    // console.log('Button states reset');
-                    setButtonStates(buttonStatesString);
-                }
-            }, function (error) {
-                console.error('Error listening for changes in Firebase:', error);
-            });
-
-            function setButtonStates(buttonStatesString) {
-                // console.log(buttonStatesString);
-                // console.log(buttonStatesString.length);
-                // buttonStatesString.substring(1, 8);
-                // console.log( buttonStatesString.substring(2, 8));
-                const buttons = document.querySelectorAll('.switch-toggle input[type="checkbox"]');
-                for (let i = 0; i < buttons.length; i++) {
-                    const buttonState = buttonStatesString.substring(2, 8).charAt(i);
-                    // console.log(buttonState);
-                    // console.log(i-2);
-                    buttons[i].checked = (buttonState === '1');
-                }
-            }
-
-            const buttons = document.querySelectorAll('.switch-toggle input[type="checkbox"]');
-
-            buttons.forEach((button, index) => {
-                button.addEventListener('change', function () {
-                    const buttonStatesString = Array.from(buttons).map(button => button.checked ? '1' : '0').join('');
-                    sendDataToFirebase(buttonStatesString);
-                });
-            });
-
-            function sendDataToFirebase(data) {
-
-                const database = firebase.database();
-                const verifierString = '"*' + data + '*"';
-                const ref = database.ref('data');
-
-                ref.set(verifierString, function (error) {
-                    if (error) {
-                        console.error('Error updating Firebase database:', error);
-                    } else {
-                        console.log('Data successfully sent to Firebase:', data);
-                    }
-                });
-            }
-        });
-
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     document.getElementById("mainOffice").style.display = "block";
-        //     document.getElementById("workshop").style.display = "none";
-        // });
-
-        // function showMainOffice() {
-        //     document.getElementById("mainOffice").style.display = "block";
-        //     document.getElementById("workshop").style.display = "none";
-        // }
-
-        // function showWorkshop() {
-        //     document.getElementById("mainOffice").style.display = "none";
-        //     document.getElementById("workshop").style.display = "block";
-        // }
-
-
-
-
-
-    </script>
+    <!-- <script src="app.js"></script> -->
 </body>
 
 </html>
